@@ -92,4 +92,21 @@ server.get('/article', (req,res)=> {
 
 });
 
+server.post('/articlelike', (req, res)=> {
+    if(req.body.id){
+        db.query('update article_table set n_like = (n_like+1) where id = ? ',[req.body.id],(err,data)=>{
+            if (err) {
+                console.log(err + ":" +data);
+                res.status(500).send("参数错误").end();
+                return;
+            }
+            res.send(JSON.stringify({
+                "msg": data
+            })).end();
+        });
+    }else {
+        res.status(404).send('请求错误').end();
+    }
+});
+
 server.use(expressStatic('./www'));
