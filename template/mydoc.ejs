@@ -1,6 +1,6 @@
 <html>
   <head>
-    <title>智能社-http://www.zhinengshe.com</title>
+    <title></title>
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta charset="UTF-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -18,12 +18,23 @@
     <link href="css/mydoc.css" rel="stylesheet" type="text/css">
     <script src="js/font.js"></script>
 	<script type="text/javascript" src="js/jquery-1.7.2.js"></script>
+      <script>
+          var toLogin = function () {
+              window.location.href = '/login';
+          }
+      </script>
  </head>
 <body>
 <div class="content">
 	<div class="header">
-    	<h2><img src="img/headimg.png" alt=""/></h2>
-        <div class="user-box"><a href="login_user.html">登录</a>/<a href="login_register.html">注册</a></div>
+        <% if (name!=null){ %>
+            <h2><img src="img/headimg.png" alt="" onclick="toLogin();"/></h2>
+            <div class="user-box"><%=name%> <a href="/logout">退出</a></div>
+        <% } %>
+        <% if (name==null){ %>
+            <h2><img src="img/headimg.png" alt="" onclick="toLogin();"/></h2>
+            <div class="user-box"><a href="/login">登录</a>/<a href="register">注册</a></div>
+        <% } %>
         <ul class="clear">
         	<li>
             	<span>0</span>
@@ -70,9 +81,9 @@
 </div>
 <div class="foot-btn">
 	<ul>
-    	<li class="home"><a href="index.html"></a></li>
+    	<li class="home"><a href="/"></a></li>
         <li class="write"><a href="javascript:;"></a></li>
-        <li class="my"><a href="mydoc.html"></a></li>
+        <li class="my"><a href="/mydoc"></a></li>
     </ul>
 </div>
 </body>

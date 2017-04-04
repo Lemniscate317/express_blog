@@ -12,6 +12,7 @@ const jade = require('jade');
 const consolidate = require('consolidate');
 const mysql = require('mysql');
 const utils = require('./libs/common');
+const async = require('async');
 
 const db = mysql.createPool({host:'localhost',user:'root',password:'1234',database:'blog'});
 
@@ -43,32 +44,53 @@ server.engine('html', consolidate.ejs);
 // server.use('/', function (req, res,next) { //get req.query  post req.body
 //     console.log(req.query, req.body, req.files,req.cookies, req.session);
 // });
-server.get('/', (req,res,next)=> {
-    db.query('select * from banner_table', (err, data)=> {
+server.get('/',(req,res,next)=>{
+    async.auto({
+        getBannertable:function (callback) {
+            db.query('select * from banner_table', (err, data)=> {
+                callback(err, data);
+            });
+        },
+        getArticletable:function(callback){
+            db.query('select id,title,summary from article_table', (err, data)=> {
+                callback(err, data);
+            });
+        },
+    },function (err, data) {
         if(err) {
-            console.log(err);
-            res.status(500).send('db error').end();
+            res.status(500).send('参数错误').end();
         }else {
-            res.banners = data;
-            next();
-            // res.render('index.ejs',{banners:data});
+            res.render('index.ejs', {banners: data.getBannertable, articles: data.getArticletable});
         }
     });
 });
-server.get('/', (req,res,next)=> {
-    db.query('select id,title,summary from article_table', (err, data)=> {
-        if(err) {
-            console.log(err);
-            res.status(500).send('db error').end();
-        }else {
-            res.articles = data;
-            next();
-        }
-    });
-});
-server.get('/', (req,res)=> {
-    res.render('index.ejs', {banners: res.banners, articles: res.articles});
-});
+
+// server.get('/', (req,res,next)=> {
+//     db.query('select * from banner_table', (err, data)=> {
+//         if(err) {
+//             console.log(err);
+//             res.status(500).send('db error').end();
+//         }else {
+//             res.banners = data;
+//             next();
+//             // res.render('index.ejs',{banners:data});
+//         }
+//     });
+// });
+// server.get('/', (req,res,next)=> {
+//     db.query('select id,title,summary from article_table', (err, data)=> {
+//         if(err) {
+//             console.log(err);
+//             res.status(500).send('db error').end();
+//         }else {
+//             res.articles = data;
+//             next();
+//         }
+//     });
+// });
+// server.get('/', (req,res)=> {
+//     res.render('index.ejs', {banners: res.banners, articles: res.articles});
+// });
 server.get('/article', (req,res)=> {
     if(req.query.id){
         db.query('select * from article_table where id=?', [req.query.id], (err, data)=> {

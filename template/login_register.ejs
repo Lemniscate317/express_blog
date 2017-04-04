@@ -159,7 +159,11 @@
         }
     </style>
     <script src="js/font.js"></script>
-
+    <script>
+        function goBack() {
+            window.history.go(-1);
+        }
+    </script>
 </head>
 
 <body>
@@ -169,53 +173,49 @@
     <div class="login-box">
         <p class="lsolid"></p>
         <div class="login">
-            <a href="">登录</a><span></span>
-            <a href="/register">注册</a>
+            <a href="/login">登录</a><span></span>
+            <a href="">注册</a>
         </div>
         <p class="rsolid"></p>
     </div>
-    <form method="post"  onsubmit="return login();">
+    <form onsubmit="return register()">
         <ul>
             <li class="lifirst">
-                <input id="username" type="text" name="username" value=""/>
+                <input type="text" id="username" value=""/>
                 <span>帐号</span>
             </li>
             <li>
-                <input id="password" type="text" name="password" value=""/>
+                <input type="text" id="password" value=""/>
                 <span>密码</span>
             </li>
-
         </ul>
         <div style="text-align: center;font-size: 15px;color: red;padding-top: 5px">
             <li id="error"></li>
         </div>
         <div class="footbox">
-            <input type="submit" value="登 录" class="login-btn"/>
+            <input type="submit" value="注 册" class="login-btn"/>
             <a href="javascript:;" class="tishi">忘记密码？</a>
         </div>
     </form>
 </div>
 <script type="text/javascript" src="js/jquery-1.7.2.js"></script>
 <script>
-    function goBack() {
-        window.history.go(-1);
-    }
-    var login = function () {
-            $.ajax({
-                url: "/login",
-                type: "post",
-                data: {"username": $("#username").val(), "password": $("#password").val()},
-                dataType: 'json',
-                success: function (msg) {
-                    if(msg.status==0) {
-                        $('#error').text(msg.msg);
-                    }else if (msg.status=="1"){
-                        window.location.href = "/mydoc";
-                    }
-                },
-                error: function (err) {
-                },
-            });
+    var register = function () {
+        $.ajax({
+            url: "/register",
+            type: "post",
+            data: {"username": $("#username").val(), "password": $("#password").val()},
+            dataType: 'json',
+            success: function (msg) {
+                if(msg.status==0) {
+                    $('#error').text(msg.msg);
+                }else if (msg.status=="1"){
+                    window.location.href = "/mydoc";
+                }
+            },
+            error: function (err) {
+            },
+        });
         return false;
     }
 </script>
